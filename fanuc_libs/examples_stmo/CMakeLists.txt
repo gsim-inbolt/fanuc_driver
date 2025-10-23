@@ -1,0 +1,2 @@
+add_executable(stmo_io_example stmo_io_example.cpp)
+target_link_libraries(stmo_io_example PRIVATE stream_motion)

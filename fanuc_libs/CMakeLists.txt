@@ -84,6 +84,7 @@ endif ()
 
 if (BUILD_STREAM_MOTION)
   add_subdirectory(stream_motion)
+  add_subdirectory(examples_stmo)
 endif()
 if (BUILD_RMI)
   add_subdirectory(rmi)
