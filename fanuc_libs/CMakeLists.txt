@@ -52,6 +52,16 @@ FetchContent_MakeAvailable(reflect-cpp)
 set_target_properties(reflectcpp PROPERTIES CXX_STANDARD 20)
 set_target_properties(reflectcpp PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
+if (BUILD_STREAM_MOTION)
+  # Build the fmt library
+  FetchContent_Declare(
+      fmt
+      GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+      GIT_TAG 12.0.0
+  )
+  FetchContent_MakeAvailable(fmt)
+endif()
+
 if (BUILD_TESTING)
   include(FetchContent)
   FetchContent_Declare(

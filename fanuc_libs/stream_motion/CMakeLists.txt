@@ -10,7 +10,7 @@ option(BUILD_EXAMPLES "Build examples" OFF)
 
 add_library(stream_motion SHARED src/stream.cpp src/byte_ops.cpp)
 set_target_properties(stream_motion PROPERTIES CXX_STANDARD 17)
-target_link_libraries(stream_motion PRIVATE Sockpp::sockpp)
+target_link_libraries(stream_motion PRIVATE Sockpp::sockpp fmt::fmt)
 target_include_directories(stream_motion PUBLIC
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
