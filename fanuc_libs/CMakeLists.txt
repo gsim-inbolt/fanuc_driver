@@ -8,6 +8,11 @@ project(fanuc_libs VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
+option(BUILD_STREAM_MOTION ON "Build stream_motion library")
+option(BUILD_RMI ON "Build rmi library")
+option(BUILD_FANUC_CLIENT ON "Build fanuc_client library")
+option(BUILD_GPIO_CONFIG ON "Build gpio_config library")
+
 # Build the sockpp library
 include(FetchContent)
 FetchContent_Declare(
@@ -77,10 +82,18 @@ if (BUILD_TESTING)
   enable_testing()
 endif ()
 
-add_subdirectory(stream_motion)
-add_subdirectory(rmi)
-add_subdirectory(fanuc_client)
-add_subdirectory(gpio_config)
+if (BUILD_STREAM_MOTION)
+  add_subdirectory(stream_motion)
+endif()
+if (BUILD_RMI)
+  add_subdirectory(rmi)
+endif()
+if (BUILD_FANUC_CLIENT)
+  add_subdirectory(fanuc_client)
+endif()
+if (BUILD_GPIO_CONFIG)
+  add_subdirectory(gpio_config)
+endif()
 
 if (BUILD_EXAMPLES)
   add_subdirectory(examples)
@@ -103,28 +116,47 @@ configure_package_config_file(fanuc_libsConfig.cmake.in
 
 # --- Install ---
 include(GNUInstallDirs)
-install(TARGETS stream_motion rmi fanuc_client gpio_config
+set(INSTALL_TARGETS "")
+if (BUILD_STREAM_MOTION)
+  list(APPEND INSTALL_TARGETS stream_motion)
+endif()
+if (BUILD_RMI)
+  list(APPEND INSTALL_TARGETS rmi)
+endif()
+if (BUILD_FANUC_CLIENT)
+  list(APPEND INSTALL_TARGETS fanuc_client)
+endif()
+if (BUILD_GPIO_CONFIG)
+  list(APPEND INSTALL_TARGETS gpio_config)
+endif()
+install(TARGETS ${INSTALL_TARGETS}
     EXPORT fanuc_libsExports
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
-install(EXPORT fanuc_libsExports
-    FILE
-    fanuc_libsTargets.cmake
-    NAMESPACE
-    fanuc_libs::
-    DESTINATION
-    ${CMAKE_INSTALL_LIBDIR}/cmake/fanuc_libs
-)
-install(DIRECTORY
-    rmi/include/
-    stream_motion/include/
-    fanuc_client/include/
-    gpio_config/include/
-    DESTINATION
-    ${CMAKE_INSTALL_INCLUDEDIR}
-)
+if (INSTALL_TARGETS)
+  install(EXPORT fanuc_libsExports
+      FILE
+      fanuc_libsTargets.cmake
+      NAMESPACE
+      fanuc_libs::
+      DESTINATION
+      ${CMAKE_INSTALL_LIBDIR}/cmake/fanuc_libs
+  )
+endif()
+if (BUILD_STREAM_MOTION)
+  install(DIRECTORY stream_motion/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+endif()
+if (BUILD_RMI)
+  install(DIRECTORY rmi/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+endif()
+if (BUILD_FANUC_CLIENT)
+  install(DIRECTORY fanuc_client/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+endif()
+if (BUILD_GPIO_CONFIG)
+  install(DIRECTORY gpio_config/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+endif()
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/fanuc_libsConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/fanuc_libsConfigVersion.cmake
